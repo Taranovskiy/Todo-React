@@ -2,11 +2,16 @@ import React from 'react';
 
 import TodoListItem from './todo-list-item';
 
-const TodoList = () => {
+const TodoList = ({ todos }) => {
+  const elements = todos.map((item) => {
+    const { id, ...rest } = item;
+    return (<li key={ id }>
+      <TodoListItem { ...rest }/>
+    </li>);
+  });
   return (
     <ul>
-      <li><TodoListItem label="Drink Coffee"/></li>
-      <li><TodoListItem label="Build Awesome App" important /></li>
+      { elements }
     </ul>
   );
 };
