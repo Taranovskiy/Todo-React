@@ -9,27 +9,55 @@ import ItemAddForm from '../item-add-form';
 import './app.css';
 
 export default class App extends Component {
+  maxId = 100;
   state = {
-    todoData : [
-      { label: 'Drink Coffee', important: false, id: 1 },
-      { label: 'Make Awesome App', important: true, id: 2 },
-      { label: 'Have a lunch', important: false, id: 3 },
-    ]
-  }
-  maxId = 100
-  deleteTodo = (id) => {
+    todoData: [
+      this.createTodoItem('Drink coffee'),
+      this.createTodoItem('Make awesome app'),
+      this.createTodoItem('Have a lunch'),
+    ],
+  };
+  deleteTodo = id => {
     this.setState(({ todoData }) => {
       const newTodoData = todoData.filter(todo => todo.id !== id);
       return { todoData: newTodoData };
     });
-  }
-  addTodo = (name) => {
-    const newTodoDataItem = {
-      label: name,
+  };
+  addTodo = name => {
+    const newTodoDataItem = this.createTodoItem(name);
+    this.setState(({ todoData }) => ({
+      todoData: [...todoData, newTodoDataItem],
+    }));
+  };
+  onToggleImportant = id => {
+    this.setState(({ todoData }) => {
+      const newTodoData = todoData.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, important: !todo.important };
+        }
+        return todo;
+      });
+      return { todoData: newTodoData };
+    });
+  };
+  onToggleDone = id => {
+    this.setState(({ todoData }) => {
+      const newTodoData = todoData.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, done: !todo.done };
+        }
+        return todo;
+      });
+      return { todoData: newTodoData };
+    });
+  };
+  createTodoItem(label) {
+    return {
+      label,
       important: false,
-      id: this.maxId++
+      done: false,
+      id: this.maxId++,
     };
-    this.setState(({ todoData }) => ({ todoData: [ ...todoData, newTodoDataItem ]}));
   }
   render() {
     return (
@@ -40,9 +68,14 @@ export default class App extends Component {
           <ItemStatusFilter />
         </div>
 
-        <TodoList todos={this.state.todoData} onDeleted={this.deleteTodo} />
-        <ItemAddForm onAdded={this.addTodo}/>
+        <TodoList
+          todos={this.state.todoData}
+          onDeleted={this.deleteTodo}
+          onToggleImportant={this.onToggleImportant}
+          onToggleDone={this.onToggleDone}
+        />
+        <ItemAddForm onAdded={this.addTodo} />
       </div>
     );
   }
-};
+}
