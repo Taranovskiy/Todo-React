@@ -3,26 +3,33 @@ import './item-add-form.css';
 
 export default class ItemAddForm extends Component {
   state = {
-    label: 'Add new item'
-  }
-  onClick = () => {
-    const { label } = this.state;
+    value: '',
+  };
+  onChangeInput = evt => {
+    this.setState({ value: evt.target.value });
+  };
+  onSubmit = evt => {
+    evt.preventDefault();
     const { onAdded } = this.props;
-    return onAdded(label);
-  }
+    const { value } = this.state;
+    onAdded(value);
+  };
   render() {
-    const { label } = this.state;
     return (
-      <div className="add-todo d-flex justify-content-between align-items-center">
-        <span className='todo-list-item-label'>New todo</span>
-        <button
-          type='button'
-          className='btn btn-sm btn-outline-primary mt-2'
-          onClick={ this.onClick }
-        >
-          { label }
+      <form
+        className='add-todo d-flex justify-content-between align-items-end'
+        onSubmit={this.onSubmit}
+      >
+        <input
+          type='text'
+          placeholder='New task'
+          className='form-control mr-2'
+          onChange={this.onChangeInput}
+        />
+        <button type='submit' className='btn btn-outline-primary mt-2'>
+          Add
         </button>
-      </div>
+      </form>
     );
   }
-};
+}
