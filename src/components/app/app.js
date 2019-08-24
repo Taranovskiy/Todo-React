@@ -29,28 +29,23 @@ export default class App extends Component {
       todoData: [...todoData, newTodoDataItem],
     }));
   };
-  onToggleImportant = id => {
-    this.setState(({ todoData }) => {
-      const newTodoData = todoData.map(todo => {
-        if (todo.id === id) {
-          return { ...todo, important: !todo.important };
-        }
-        return todo;
-      });
-      return { todoData: newTodoData };
+  toggleStateProp = (arr, id, propName) => {
+    const newStateProp = arr.map(todo => {
+      if (todo.id === id) {
+        return { ...todo, [propName]: !todo[propName] };
+      }
+      return todo;
     });
+    return { todoData: newStateProp };
   };
-  onToggleDone = id => {
-    this.setState(({ todoData }) => {
-      const newTodoData = todoData.map(todo => {
-        if (todo.id === id) {
-          return { ...todo, done: !todo.done };
-        }
-        return todo;
-      });
-      return { todoData: newTodoData };
-    });
-  };
+
+  onToggleImportant = id =>
+    this.setState(({ todoData }) =>
+      this.toggleStateProp(todoData, id, 'important')
+    );
+  onToggleDone = id =>
+    this.setState(({ todoData }) => this.toggleStateProp(todoData, id, 'done'));
+
   createTodoItem(label) {
     return {
       label,
@@ -60,16 +55,20 @@ export default class App extends Component {
     };
   }
   render() {
+    const { todoData } = this.state;
+    const doneCount = todoData.filter(todo => todo.done).length;
+    const todoCount = todoData.length - doneCount;
+
     return (
       <div className='todo-app'>
-        <AppHeader toDo={1} done={3} />
+        <AppHeader toDo={todoCount} done={doneCount} />
         <div className='top-panel d-flex'>
           <SearchPanel />
           <ItemStatusFilter />
         </div>
 
         <TodoList
-          todos={this.state.todoData}
+          todos={todoData}
           onDeleted={this.deleteTodo}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone}
