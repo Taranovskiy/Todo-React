@@ -13,6 +13,7 @@ export default class ItemAddForm extends Component {
     const { onAdded } = this.props;
     const { value } = this.state;
     onAdded(value);
+    this.setState({ value: '' });
   };
   render() {
     return (
@@ -25,6 +26,7 @@ export default class ItemAddForm extends Component {
           placeholder='New task'
           className='form-control mr-2'
           onChange={this.onChangeInput}
+          value={this.state.value}
         />
         <button type='submit' className='btn btn-outline-primary mt-2'>
           Add
